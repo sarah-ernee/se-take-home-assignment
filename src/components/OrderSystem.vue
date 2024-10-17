@@ -2,10 +2,13 @@
   <div class="order-system">
     <div class="order-system__controls">
       <h2>Controls</h2>
-      <button class="order-system__control-btn" @click="addNormalOrder()">
+      <button
+        class="order-system__control-btn"
+        @click="() => addOrder('Normal')"
+      >
         New Normal Order
       </button>
-      <button class="order-system__control-btn" @click="addVIPOrder()">
+      <button class="order-system__control-btn" @click="() => addOrder('VIP')">
         New VIP Order
       </button>
       <button class="order-system__control-btn" @click="addBot()">+ Bot</button>
@@ -40,9 +43,37 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { ref } from "vue";
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
+const orderCounter = ref(0);
+const botCounter = ref(0);
+const pendingOrders = ref([]);
+const completedOrders = ref([]);
+const activeBots = ref([]);
+
+const addOrder = (type) => {
+  const newOrder = {
+    id: ++orderCounter.value,
+    type,
+    processing: false,
+  };
+
+  if (type == "VIP") {
+    console.log("bump up the queue");
+  } else {
+    pendingOrders.value.push(newOrder);
+  }
+};
+
+const addBot = () => {
+  activeBots.value.push({
+    id: ++botCounter.value,
+    status: 'Idle'
+  })
+}
+</script>
+
 <style lang="scss">
 .order-system {
   display: flex;
